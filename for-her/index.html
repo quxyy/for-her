@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ариночке ❤️">
+<meta name="description" content="Сайт, сделанный с любовью для Арины">
+<title>Ариночке❤️</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    background-attachment: fixed;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Плавающая навигация для мобильных */
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(26, 26, 46, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 77, 109, 0.3);
+    border-radius: 50px;
+    padding: 8px 12px;
+    display: flex;
+    gap: 5px;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+  .nav a {
+    color: #ffb3c6;
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    transition: all 0.3s;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .nav a .icon { font-size: 1.2rem; }
+  .nav a:active, .nav a:hover {
+    background: rgba(255, 77, 109, 0.3);
+    color: #fff;
+  }
+
+  /* Падающие сердечки */
+  .heart {
+    position: fixed;
+    top: -50px;
+    color: #ff4d6d;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px 120px;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 3rem);
+    background: linear-gradient(90deg, #ff4d6d, #ffb3c6, #ff4d6d);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    animation: glow 3s ease-in-out infinite, shine 4s linear infinite;
+    line-height: 1.2;
+    padding: 0 10px;
+  }
+  @keyframes glow {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,77,109,0.5)); }
+    50% { filter: drop-shadow(0 0 25px rgba(255,77,109,0.9)); }
+  }
+  @keyframes shine {
+    to { background-position: 200% center; }
+  }
+
+  .subtitle {
+    font-size: clamp(0.95rem, 4vw, 1.2rem);
+    color: #ffb3c6;
+    margin-bottom: 40px;
+    font-style: italic;
+    padding: 0 15px;
+  }
+
+  h2.section-title {
+    color: #ffb3c6;
+    font-weight: normal;
+    font-size: clamp(1.1rem, 5vw, 1.4rem);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Таймер - адаптивный */
+  .timer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 30px 0;
+    padding: 0 5px;
+  }
+  .time-block {
+    background: rgba(255, 77, 109, 0.15);
+    border: 1.5px solid rgba(255, 77, 109, 0.4);
+    border-radius: 12px;
+    padding: 15px 5px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s;
+    min-width: 0;
+  }
+  .time-block:active { transform: scale(0.95); }
+  .time-num {
+    font-size: clamp(1.4rem, 6vw, 2.5rem);
+    font-weight: bold;
+    color: #ff4d6d;
+    display: block;
+    line-height: 1.1;
+  }
+  .time-label {
+    font-size: clamp(0.6rem, 2.5vw, 0.85rem);
+    color: #ffb3c6;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  /* Галерея - свайп на мобильном */
+  .gallery-wrap {
+    margin: 40px -20px;
+    overflow: hidden;
+    position: relative;
+  }
+  .gallery {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 10px 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .gallery::-webkit-scrollbar { display: none; }
+  .photo {
+    flex: 0 0 75%;
+    max-width: 300px;
+    scroll-snap-align: center;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 3px solid rgba(255, 77, 109, 0.4);
+    transition: transform 0.4s, border-color 0.4s;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #ff4d6d, #c9184a);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+  .photo:active { transform: scale(0.97); }
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  /* Индикатор точек для галереи */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 179, 198, 0.4);
+    transition: all 0.3s;
+  }
+  .dot.active {
+    background: #ff4d6d;
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  /* Письмо */
+  .letter {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid #ff4d6d;
+    padding: 25px 20px;
+    border-radius: 12px;
+    margin: 40px 0;
+    text-align: left;
+    font-size: clamp(0.95rem, 3.8vw, 1.15rem);
+    line-height: 1.8;
+    color: #f0f0f0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .letter p { margin-bottom: 15px; }
+  .letter p:last-child { margin-bottom: 0; }
+
+  /* Кнопки - крупные для пальца */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #ff4d6d, #c9184a);
+    color: white;
+    padding: 16px 36px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: clamp(1rem, 4vw, 1.1rem);
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.3s;
+    box-shadow: 0 10px 30px rgba(255, 77, 109, 0.4);
+    margin: 10px;
+    min-height: 54px;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(255, 77, 109, 0.6);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 2px solid rgba(255, 77, 109, 0.6);
+    color: #ffb3c6;
+    box-shadow: none;
+  }
+  .btn-secondary:active {
+    background: rgba(255, 77, 109, 0.2);
+    transform: scale(0.95);
+  }
+
+  /* Скрытое сообщение */
+  #secret {
+    display: none;
+    margin-top: 25px;
+    font-size: clamp(1rem, 4.2vw, 1.4rem);
+    color: #ff4d6d;
+    animation: glow 2s infinite, pop 0.5s ease-out;
+    padding: 20px;
+    line-height: 1.6;
+    text-align: left;
+    background: rgba(255, 77, 109, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 77, 109, 0.3);
+  }
+  @keyframes pop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Анимация появления при скролле */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s, transform 0.8s;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  footer {
+    margin-top: 60px;
+    color: #ffb3c6;
+    font-size: 0.85rem;
+    padding: 0 20px 20px;
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+
+  /* Улучшение для больших экранов */
+  @media (min-width: 768px) {
+    .gallery { overflow: visible; justify-content: center; flex-wrap: wrap; }
+    .photo { flex: 0 0 200px; }
+    .dots { display: none; }
+    .nav { display: none; }
+    .timer { gap: 20px; }
+    .time-block { padding: 20px 25px; }
+  }
+
+  /* Очень маленькие экраны */
+  @media (max-width: 360px) {
+    .time-block { padding: 10px 3px; }
+    .nav a { padding: 8px 10px; font-size: 0.65rem; }
+    .nav a .icon { font-size: 1rem; }
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Навигация -->
+<nav class="nav">
+  <a href="#timer-section"><span class="icon">⏱️</span>Время</a>
+  <a href="#gallery-section"><span class="icon">📸</span>Фото</a>
+  <a href="#letter-section"><span class="icon">💌</span>Письмо</a>
+</nav>
+
+<div class="container">
+  <h1 class="reveal">Для тебя, моя самая любимая ❤️</h1>
+  <p class="subtitle reveal">Каждая секунда с тобой — бесценна</p>
+
+  <section id="timer-section" class="reveal">
+    <h2 class="section-title">Я счастлив с тобой уже:</h2>
+    <div class="timer">
+      <div class="time-block"><span class="time-num" id="days">0</span><span class="time-label">дней</span></div>
+      <div class="time-block"><span class="time-num" id="hours">0</span><span class="time-label">часов</span></div>
+      <div class="time-block"><span class="time-num" id="minutes">0</span><span class="time-label">минут</span></div>
+      <div class="time-block"><span class="time-num" id="seconds">0</span><span class="time-label">секунд</span></div>
+    </div>
+  </section>
+
+  <section id="gallery-section" class="reveal">
+    <h2 class="section-title">Наши моменты 📸</h2>
+  </section>
+</div>
+
+<!-- Галерея вынесена за .container для полной ширины -->
+<div class="gallery-wrap">
+  <div class="gallery" id="gallery">
+    <div class="photo"><img src="photos/1.jpg" alt="Наше фото" onerror="this.remove()"></div>
+    <div class="photo"><img src="photos/2.jpg" alt="Наше фото" onerror="this.remove()"></div>
+    <div class="photo"><img src="photos/3.jpg" alt="Наше фото" onerror="this.remove()"></div>
+  </div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<div class="container">
+  <div class="letter reveal" id="letter-section">
+    <p>Любимая,</p>
+    <p>Этот сайт я сделал специально для тебя. Каждая строчка кода — это моя мысль о тебе. Ты делаешь мою жизнь ярче, теплее и счастливее.</p>
+    <p>Спасибо, что ты рядом. Спасибо за твою улыбку, за твой смех, за твою заботу. Я люблю тебя больше, чем можно выразить словами.</p>
+    <p style="text-align:right; font-style:italic;">— Твой навсегда ❤️</p>
+  </div>
+
+  <button class="btn reveal" onclick="showSecret()">Узнай секрет 💌</button>
+  <br>
+  <button class="btn btn-secondary reveal" onclick="sharePage()">Поделиться 🔗</button>
+  
+  <div id="secret">В этом мире нет ничего, что изменило бы мои чувства к тебе. Как бы тяжело ни было, в конце дня я все равно люблю тебя. P.S. И все твои маленькие вредности я всегда готов принять и посмеяться💖</div>
+
+  <footer>Сделано с любовью от Егора, специально для Арины</footer>
+</div>
+
+<script>
+  // Дата вашего знакомства
+  const startDate = new Date('2025-09-13T00:00:00');
+
+  // ===== ТАЙМЕР =====
+  function updateTimer() {
+    const now = new Date();
+    const diff = now - startDate;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    document.getElementById('days').textContent = days;
+    document.getElementById('hours').textContent = hours;
+    document.getElementById('minutes').textContent = minutes;
+    document.getElementById('seconds').textContent = seconds;
+  }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+
+  // ===== ВИБРАЦИЯ (только на мобильных) =====
+  function vibrate(pattern) {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(pattern);
+    }
+  }
+
+  // ===== СЕКРЕТНОЕ СООБЩЕНИЕ =====
+  function showSecret() {
+    vibrate([50, 30, 50, 30, 100]);
+    const s = document.getElementById('secret');
+    s.style.display = 'block';
+    for (let i = 0; i < 40; i++) {
+      setTimeout(() => createHeart(true), i * 30);
+    }
+    // Плавный скролл к секрету
+    setTimeout(() => {
+      s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  }
+
+  // ===== ПОДЕЛИТЬСЯ =====
+  function sharePage() {
+    vibrate(30);
+    const shareData = {
+      title: 'Ариночке ❤️',
+      text: 'Открой, это тебе 💖',
+      url: window.location.href
+    };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Ссылка скопирована! 💕');
+      }).catch(() => {
+        alert('Скопируй ссылку: ' + window.location.href);
+      });
+    }
+  }
+
+  // ===== ПАДАЮЩИЕ СЕРДЕЧКИ =====
+  function createHeart(burst = false) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = ['❤️','💖','💕','💗','💘','💝'][Math.floor(Math.random()*6)];
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = (12 + Math.random() * 20) + 'px';
+    const duration = 5 + Math.random() * 4;
+    heart.style.animationDuration = duration + 's';
+    if (burst) {
+      heart.style.top = (30 + Math.random() * 40) + 'vh';
+      heart.style.animation = `fall ${duration}s linear forwards`;
+    }
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), duration * 1000);
+  }
+
+  // Меньше сердечек на мобильных (для производительности)
+  const isMobile = window.innerWidth < 768;
+  setInterval(createHeart, isMobile ? 800 : 400);
+
+  // ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ =====
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== ТОЧКИ-ИНДИКАТОРЫ ДЛЯ ГАЛЕРЕИ =====
+  const gallery = document.getElementById('gallery');
+  const dotsContainer = document.getElementById('dots');
+  const photos = gallery.querySelectorAll('.photo');
+
+  if (isMobile && photos.length > 0) {
+    photos.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = dotsContainer.querySelectorAll('.dot');
+
+    gallery.addEventListener('scroll', () => {
+      const scrollLeft = gallery.scrollLeft;
+      const photoWidth = photos[0].offsetWidth + 12;
+      const activeIndex = Math.round(scrollLeft / photoWidth);
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === activeIndex);
+      });
+    }, { passive: true });
+  }
+
+  // ===== ВИБРАЦИЯ ПРИ НАЖАТИИ НА ВРЕМЯ =====
+  document.querySelectorAll('.time-block').forEach(block => {
+    block.addEventListener('touchstart', () => vibrate(15), { passive: true });
+  });
+
+  // ===== ЗАЩИТА ОТ ДВОЙНОГО ТАПА (ZOOM) =====
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = now;
+  }, false);
+
+  // ===== ФИКС ДЛЯ iOS: 100vh =====
+  function setVH() {
+    document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+  }
+  setVH();
+  window.addEventListener('resize', setVH);
+</script>
+</body>
+</html>
